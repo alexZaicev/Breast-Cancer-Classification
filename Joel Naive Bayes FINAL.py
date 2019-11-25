@@ -136,15 +136,25 @@ class DataFeeder(object):
         self.features_ = sc.fit_transform(self.features_)
 
 def main():
+    """ Initialise DataFrame and pull the features and targets """
     df = DataFeeder()
     features, target = df.get_data()
+    
+    """ Use only 1 component """
     features = df.pca(n_components=1)
     
+    """ Split features and target into test and train, with a test size of 50% """
     features_train, features_test, target_train, target_test = train_test_split(
-            features, target, stratify=target, random_state=1)
+            features, target, test_size=0.5, stratify=target, random_state=100)
     
+    """ Initialise Gaussian Naive Bayes into variable clf """
     clf = GaussianNB()
+    
+    """ Fit the training data into the classifier and predict using test data """
+    
     y_pred = clf.fit(features_train, target_train).predict(features_test)
+    
+    """ Calculate and print accuracy score """
     acc = accuracy_score(target_test, y_pred) * 100
     print(acc)
 
