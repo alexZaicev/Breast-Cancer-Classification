@@ -9,29 +9,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-"""
-    Data Processing ==> this bit will change as the whole team need to work on it
-    START:
-"""
-
-
-def get_data():
-    data_set = pd.read_csv('BREAST_CANCER_WISCONSIN.csv')
-    data_set = data_set.mask(data_set == 0)
-    means = data_set.mean()
-    data_set.fillna(means)
-    lbl_encoder = LabelEncoder()
-    data_set = data_set[data_set.columns[:]].apply(lbl_encoder.fit_transform)
-    X = data_set.iloc[:, 2:]
-    y = data_set.iloc[:, 1]
-    sc = StandardScaler()
-    return sc.fit_transform(X), y
-
-
-"""
-    Data Processing ==> this bit will change as the whole team need to work on it
-    END
-"""
+from data_feeder import DataFeeder
 
 
 def plot_decision_regions(X, y, classifier, resolution=.02, test_idx=None):
@@ -49,7 +27,8 @@ def plot_decision_regions(X, y, classifier, resolution=.02, test_idx=None):
                            np.arange(x2_min, x2_max, resolution))
     Z = classifier.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
     Z = Z.reshape(xx1.shape)
-    plt.contourf(xx1, xx2, Z, alpha=.35, cmap=ListedColormap(colors=colors[:len(np.unique(y))]))
+    plt.contourf(xx1, xx2, Z, alpha=.35, cmap=ListedColormap(
+        colors=colors[:len(np.unique(y))]))
     plt.xlim(xx1.min(), xx2.max())
     plt.ylim(xx2.min(), xx2.max())
 
@@ -98,9 +77,12 @@ def calculate_f1_score(y_test, y_pred):
     :param y_pred: Actually predicted data set
     """
     print('# Running precision, recall and F1-score')
-    print('# F1-Score:\t\t%.2f' % f1_score(y_test, y_pred, average="macro"))
-    print('# Precision:\t%.2f' % precision_score(y_test, y_pred, average="macro"))
-    print('# Recall:\t\t%.2f' % recall_score(y_test, y_pred, average="macro"))
+    print('# F1-Score:\t\t%.2f' %
+          (f1_score(y_test, y_pred, average="macro") * 100))
+    print('# Precision:\t\t%.2f' %
+          (precision_score(y_test, y_pred, average="macro") * 100))
+    print('# Recall:\t\t%.2f' % (recall_score(
+        y_test, y_pred, average="macro") * 100))
 
 
 # your model runs better with 4 features, however the drawback is that you
@@ -113,11 +95,13 @@ def run_2d_model():
     """
     print('\nLinear Discriminant Analysis - 2 dimensions with decision regions\n')
     # get features of the data and the target
-    X, y = get_data()
+    df = DataFeeder()
+    X, y = df.get_data()
     # reduce our features only to 2 dimensions
     X = run_pca(X)
     # split data into 70% training & 30% testing
-    X_train_std, X_test_std, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+    X_train_std, X_test_std, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=1)
     # create linear dicriminant analysis model
     model = LinearDiscriminantAnalysis()
     # train your model
@@ -136,7 +120,8 @@ def run_2d_model():
     plt.figure()
     plot_decision_regions(X_combined_std, y_combined_std, model)
     # plot confusion matrix
-    plot_confusion_matrix(y_test, y_pred, normalize=True, title='Confusion Matrix')
+    plot_confusion_matrix(y_test, y_pred, normalize=True,
+                          title='Confusion Matrix')
     plt.show()
 
 
@@ -146,11 +131,13 @@ def run_4d_model():
     """
     print('\nLinear Discriminant Analysis - 4 dimensions\n')
     # get features of the data and the target
-    X, y = get_data()
+    df = DataFeeder()
+    X, y = df.get_data()
     # reduce our features only to 2 dimensions
     X = run_pca(X, n_components=4, columns=['pc_1', 'pc_2', 'pc_3', 'pc_4'])
     # split data into 70% training & 30% testing
-    X_train_std, X_test_std, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+    X_train_std, X_test_std, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=1)
     # create linear dicriminant analysis model
     model = LinearDiscriminantAnalysis()
     # train your model
@@ -162,7 +149,8 @@ def run_4d_model():
     print('# Accuracy score: %.2f' % score)
     calculate_f1_score(y_test, y_pred)
     # plot confusion matrix
-    plot_confusion_matrix(y_test, y_pred, normalize=True, title='Confusion Matrix')
+    plot_confusion_matrix(y_test, y_pred, normalize=True,
+                          title='Confusion Matrix')
     plt.show()
 
 
