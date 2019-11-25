@@ -143,9 +143,9 @@ def main():
     """ Use only 1 component """
     features = df.pca(n_components=1)
     
-    """ Split features and target into test and train, with a test size of 50% """
+    """ Split features and target into 70% train and 30% test """
     features_train, features_test, target_train, target_test = train_test_split(
-            features, target, test_size=0.5, stratify=target, random_state=100)
+            features, target, test_size=0.3, stratify=target, random_state=100)
     
     """ Initialise Gaussian Naive Bayes into variable clf """
     clf = GaussianNB()
