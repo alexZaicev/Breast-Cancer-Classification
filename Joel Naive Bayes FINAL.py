@@ -5,18 +5,12 @@ Created on Mon Nov 25 22:08:47 2019
 @author:    Joel Scheven - S15126687
 """
 
+import warnings
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
-from sklearn.preprocessing import LabelEncoder, LabelBinarizer
-
-
-import warnings
-
-import numpy as np
-import pandas as pd
 from scipy import stats
 from sklearn.decomposition import KernelPCA
 from sklearn.preprocessing import LabelEncoder, StandardScaler
