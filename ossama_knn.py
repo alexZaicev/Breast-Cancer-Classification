@@ -155,9 +155,9 @@ def calculate_f1_score(y_test, y_pred):
     :param y_pred: Actually predicted data set
     """
     print('# Running precision, recall and F1-score')
-    print('# F1-Score:\t\t%.2f' % f1_score(y_test, y_pred, average="macro"))
-    print('# Precision:\t\t%.2f' % precision_score(y_test, y_pred, average="macro"))
-    print('# Recall:\t\t%.2f' % recall_score(y_test, y_pred, average="macro"))
+    print('# F1-Score:\t\t%.2f' % (f1_score(y_test, y_pred, average="macro") * 100))
+    print('# Precision:\t\t%.2f' % (precision_score(y_test, y_pred, average="macro") * 100))
+    print('# Recall:\t\t%.2f' % (recall_score(y_test, y_pred, average="macro") * 100))
 
 def main():
     # init data feeder

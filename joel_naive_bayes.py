@@ -2,7 +2,7 @@
 """ Naive Bayes prototype """
 
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 from sklearn.naive_bayes import GaussianNB
 
 from data_feeder import DataFeeder
@@ -28,7 +28,10 @@ def main():
     
     """ Calculate and print accuracy score """
     acc = accuracy_score(target_test, y_pred) * 100
-    print(acc)
+    print("Accuracy Score: %.2f" % acc)
+    print("F1 score: %.2f" % (f1_score(target_test, y_pred) * 100))
+    print("Recall score: %.2f" % (recall_score(target_test, y_pred) * 100))
+    print("Precision score: %.2f" % (precision_score(target_test, y_pred) * 100))
 
 if __name__ == '__main__':
     main()
