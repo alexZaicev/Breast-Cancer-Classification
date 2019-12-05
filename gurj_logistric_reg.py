@@ -14,6 +14,7 @@ def plot_decision_regions(X, y, classifier, resolution=.02, test_idx=None):
     """
         Plot decision boundaries
     """
+    plt.figure()
     # setup marker generator & color map
     markers = ('x', 'o')
     colors = ('red', 'blue')
@@ -60,7 +61,7 @@ def find_parameters(features, target, n_folds=5, scorer=None, penalty='l2', solv
     return clf.best_params_
 
 
-def run_train_test_split(features, target, random_state=1, penalty='none', solver='lbfgs', C=1):
+def run_train_test_split(features, target, random_state=1, penalty='l2', solver='lbfgs', C=1, title=''):
     """
         Run training and testing dataset split model
     """
@@ -80,7 +81,7 @@ def run_train_test_split(features, target, random_state=1, penalty='none', solve
         plot_decision_regions(X, y, clf, test_idx=range(len(X_train) - 1, len(features) - 1))
     
 
-def run_cross_validation(features, target, C=1, random_state=1, n_splits=5, penalty='l2', solver='lbfgs'):
+def run_cross_validation(features, target, C=1, random_state=1, n_splits=5, penalty='l2', solver='lbfgs', title=''):
     """
         Run cross validation model
     """
@@ -101,7 +102,7 @@ def run_cross_validation(features, target, C=1, random_state=1, n_splits=5, pena
                                   target_pred.round(), average="macro") * 100
         s_rec += recall_score(target.iloc[test],
                               target_pred.round(), average="macro") * 100
-
+    plt.title(title)
     acc = np.mean(scores)
     error_rate = np.std(scores)
     print('Accuracy Score: %.2f (+- %.2f)' % (acc, error_rate))
@@ -116,8 +117,8 @@ def main():
     features, target = dt.get_data()
     
     # perform PCA with variety of components
-    features = dt.pca(2)
-    #features = dt.pca(10)
+    # features = dt.pca(2)
+    features = dt.pca(10)
     
     # get best hyperparameters
     scorer = make_scorer(f1_score, pos_label=0)
@@ -126,19 +127,19 @@ def main():
     # run train test split without penalty
     print('#################################################')
     print('Train test split without penaty')          
-    run_train_test_split(features, target, C=params['C'])
+    run_train_test_split(features, target, C=params['C'], penalty='none', solver='saga')
     # run train test split with L2 penalty
     print('#################################################')
     print('Train test split with L2 penaty')
-    run_train_test_split(features, target, penalty='l2', C=params['C'])
+    run_train_test_split(features, target, C=params['C'])
     # run cross validation with L2 penalty
     print('#################################################')
     print('Cross Validation with L2 penalty')
-    run_cross_validation(features, target, C=params['C'])
+    run_cross_validation(features, target, C=params['C'], penalty='none', solver='saga', title='Cross validation with no penalty')
     # run cross validation without penalty
     print('#################################################')
     print('Cross Validation without penalty')
-    run_cross_validation(features, target, C=params['C'], penalty='none')
+    run_cross_validation(features, target, C=params['C'], title='Cross validation with l2 penalty')
     
     # plot decission boundaries
     plt.show()
