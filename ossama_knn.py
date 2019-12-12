@@ -26,6 +26,7 @@ def plot_decision_regions(X, y, classifier, resolution=.02, test_idx=None):
         :param test_idx - Array IDs of test data
     """
     # setup marker generator & color map
+    plt.figure()
     markers = ('x', 'o')
     colors = ('red', 'blue')
 
@@ -159,19 +160,34 @@ def calculate_f1_score(y_test, y_pred):
     print('# Precision:\t\t%.2f' % (precision_score(y_test, y_pred, average="macro") * 100))
     print('# Recall:\t\t%.2f' % (recall_score(y_test, y_pred, average="macro") * 100))
 
+def plot_hist(data, num_bins=2, facecolor='blue', xlabel='', ylabel='', edgecolor='black', title='', xlim=None):
+    plt.figure()
+    plt.hist(data, bins=num_bins, facecolor=facecolor,
+             alpha=.2, edgecolor=edgecolor)
+    plt.title(title)
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    if xlim is not None:
+        axes = plt.axes()
+        axes.set_xlim(xlim)
+
 def main():
     # init data feeder
     df = DataFeeder()
     # get pre-processed features and target
     features, target = df.get_data()
+
+    plot_hist(target, xlabel='Diagnosis', ylabel='Patient Records', title='Patient Diagnosis Distribution', xlim=['M', 'B'])
+
     # run PCA to reduce data dimensionality
     # run several times to campare classifier prediction accuracy and error rate
-    features = df.pca(n_components=2)
+    # features = df.pca(n_components=2)
     # features = df.pca(n_components=4)
-    # features = df.pca(n_components=10)
+    features = df.pca(n_components=10)
 
     # find best hyperparameter
     n_neighbors = find_best_params(features, target)['n_neighbors']
+    print("Best number of neighbors: %d" % n_neighbors)
     # run train_test_split
     std_test_train_split(features, target, n_neighbors=n_neighbors)
     # run cross validation

@@ -117,7 +117,7 @@ def main():
     features, target = dt.get_data()
     
     # perform PCA with variety of components
-    # features = dt.pca(2)
+    #features = dt.pca(2)
     features = dt.pca(10)
     
     # get best hyperparameters
