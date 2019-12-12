@@ -180,7 +180,6 @@ def main():
     plot_hist(target, xlabel='Diagnosis', ylabel='Patient Records', title='Patient Diagnosis Distribution', xlim=['M', 'B'])
 
     # run PCA to reduce data dimensionality
-    # run several times to campare classifier prediction accuracy and error rate
     # features = df.pca(n_components=2)
     # features = df.pca(n_components=4)
     features = df.pca(n_components=10)

@@ -53,14 +53,6 @@ def plot_decision_regions(X, y, classifier, resolution=.02, test_idx=None):
                     label='test set')
 
 
-"""
-    Discriminant Analysis Model
-    
-    X - is your feature data
-    y - is your target data
-"""
-
-
 def run_pca(X, n_components=2, columns=('pc_1', 'pc_2')):
     pca = PCA(n_components=n_components)
     pc = pca.fit_transform(X)
@@ -70,8 +62,6 @@ def run_pca(X, n_components=2, columns=('pc_1', 'pc_2')):
 def calculate_f1_score(y_test, y_pred):
     """
         Function calculate precision, recall and F1-score of your model
-        This helps to identify if the model good. You may want to include
-        that in you report
     :param y_test: Testing data set
     :param y_pred: Actually predicted data set
     """
@@ -79,11 +69,6 @@ def calculate_f1_score(y_test, y_pred):
     print('# F1-Score:\t\t%.2f' % f1_score(y_test, y_pred, average="macro"))
     print('# Precision:\t%.2f' % precision_score(y_test, y_pred, average="macro"))
     print('# Recall:\t\t%.2f' % recall_score(y_test, y_pred, average="macro"))
-
-
-# your model runs better with 4 features, however the drawback is that you
-# not able to visualize it with graphs as it`s 4D. I`ll include 2D version &
-# 4D version, so that you could compare them in your report and use the graphs
 
 def run_2d_model():
     """
@@ -99,9 +84,9 @@ def run_2d_model():
     X_train_std, X_test_std, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
     # create linear dicriminant analysis model
     model = LinearDiscriminantAnalysis()
-    # train your model
+    # train
     model.fit(X_train_std, y_train)
-    # test you model
+    # test
     y_pred = model.predict(X_test_std)
     # calculate model accuracy score
     score = accuracy_score(y_test, y_pred) * 100
@@ -133,9 +118,9 @@ def run_4d_model():
     X_train_std, X_test_std, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
     # create linear dicriminant analysis model
     model = LinearDiscriminantAnalysis()
-    # train your model
+    # train
     model.fit(X_train_std, y_train)
-    # test you model
+    # test
     y_pred = model.predict(X_test_std)
     # calculate model accuracy score
     score = accuracy_score(y_test, y_pred) * 100
@@ -145,7 +130,5 @@ def run_4d_model():
     plot_confusion_matrix(y_test, y_pred, normalize=True, title='Confusion Matrix')
     plt.show()
 
-
-# just call the function that does the magic
 # run_2d_model()
 run_4d_model()

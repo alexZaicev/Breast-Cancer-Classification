@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mlxtend.plotting import plot_decision_regions
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import StratifiedKFold, train_test_split, GridSearchCV
 from sklearn.metrics import make_scorer, f1_score, accuracy_score, precision_score, recall_score, classification_report
@@ -15,12 +16,13 @@ from data_feeder import DataFeeder
 
 def find_best_params(features, target, n_folds=5, scorer=None):
     """
-      Function to find best hyperparameters for Decision Tree Classifier
+      Function to find the best hyperparameter (max_depth) for the Decision Tree Classifier
+      to ultimately get the best accuracy
 
-      :param features - Dataset feature columns
-      :param target - Dataset target column
-      :param n_folds - Number fold for GridSearchCV
-      :param scorer - Scorer for GridSearchCV
+      features -> Dataset feature columns
+      target -> Dataset target column
+      n_folds -> Number of folds for GridSearchCV
+      scorer -> Scorer for GridSearchCV 
     """
     params = {'max_depth': np.linspace(1, 32, 32, endpoint=True)}
     __search = GridSearchCV(DecisionTreeClassifier(),
@@ -28,15 +30,15 @@ def find_best_params(features, target, n_folds=5, scorer=None):
     __search.fit(features, target)
     return __search.best_params_
 
-
 def std_train_test_split(features_train, features_test, target_train, target_test, max_depth=5):
     """
-      Function to train and test Decision Tree Classifier
-      :param features_train - Dataset feature columns for training
-      :param feataures_test - Dataset feature columns for testing
-      :param target_train - Dataset target column for training
-      :param target_test - Dataset target column for testing
-      :param max_depth - Maximum depth of the classifier
+      Function to train and test the Decision Tree algorithm
+      
+      features_train -> Dataset feature columns for training
+      feataures_test -> Dataset feature columns for testing
+      target_train -> Dataset target column for training
+      target_test -> Dataset target column for testing
+      max_depth -> Maximum depth of the algorithm (tweaked for a better accuracy)
     """
     print('############  Standard Train/Test Split  #################')
     clf = DecisionTreeClassifier(max_depth=max_depth)
@@ -52,18 +54,19 @@ def std_train_test_split(features_train, features_test, target_train, target_tes
     plot_confusion_matrix(target_test, target_pred)
     # export graph
     with open('decision_tree.dot', 'w') as f:
-        f = export_graphviz(clf, out_file=f)
-    check_call(['dot', '-Tpng', 'decision_tree.dot',
-                '-o', 'decision_tree.png'])
+        f = export_graphviz(clf, out_file=f, filled = True, rounded = True)
+    #check_call(['dot', '-Tpng', 'decision_tree.dot',
+    #                 '-o', 'decision_tree.png'])
 
 
 def cross_validation(features, target, max_depth=5, n_splits=5, random_state=1):
     """
-      Function to perform cross validation of the classifier
-      :param features - Dataset feature columns
-      :param target - Dataset target column
-      :param n_splits - Number of cross validation splits
-      :param random_state - Number for random state generator
+      Function to perform cross validation of the algorithm
+      
+      features -> Dataset feature columns
+      target -> Dataset target column
+      n_splits -> Number of cross validation splits
+      random_state -> Number for random state generator
     """
     print('############   Running Cross Validation   ######################')
     kf = StratifiedKFold(
@@ -90,19 +93,19 @@ def cross_validation(features, target, max_depth=5, n_splits=5, random_state=1):
     print('F1 Score: %.2f' % (s_f1 / n_splits))
     print('Precision Score: %.2f' % (s_prec / n_splits))
     print('Recall Score: %.2f' % (s_rec / n_splits))
-
+    
 
 def main():
-    # initialize data feeder
+    # initialize dataframe as data attained from the DataFeeder
     df = DataFeeder()
-    # get feature and target data sets
+    # get feature and target data sets from cancer data
     features, target = df.get_data()
 
-    # perform PCA
-    features = df.pca(n_components=4)
-    # features = df.pca(n_components=10)
+    # perform PCA with the option of 4 or 2 components
+    #features = df.pca(n_components=4)
+    features = df.pca(n_components=2)
 
-    # find best hyperparameters
+    # find best hyperparameters (max depth for decision tree)
     scorer = make_scorer(f1_score, pos_label=0)
     params = find_best_params(features, target, scorer=scorer)
 
@@ -116,6 +119,7 @@ def main():
     # run cross validation
     cross_validation(features, target, max_depth=int(params['max_depth']))
     plt.show()
+    
 
 
 if __name__ == '__main__':
